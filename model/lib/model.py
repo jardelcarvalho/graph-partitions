@@ -47,29 +47,33 @@ def initialize(graph, lp_file_path=None):
 
     _MODEL = model
 
-def run():
+def run(print_status=False):
     solver = pyo.SolverFactory('cbc', executable=_SOLVER_PATH)
     solver.options['LogFile'] = 'log.log'
 
     status = solver.solve(_MODEL, options={"threads": 1})
 
-    print(status)
+    if print_status:
+        print(status)
 
-    print(f'\n\n### OBJECTIVE: {_MODEL.z()}')
+        print(f'\n\n### OBJECTIVE: {_MODEL.z()}')
 
     active_edges = []
 
-    print('\n### DEACTIVATED EDGES')
+    if print_status:
+        print('\n### DEACTIVATED EDGES')
     count = 0
     for i, j, w in data.DATA['graph'].edges:
         index = VariableIndexFormating.x(i, j)
         if _MODEL.x[index].value != 1:
-            print(index, _MODEL.x[index].value)
+            if print_status:
+                print(index, _MODEL.x[index].value)
             count += 1
         else:
             active_edges.append((i, j, w))
 
-    print('\nTotal deactivated edges:', count)
+    if print_status:
+        print('\nTotal deactivated edges:', count)
 
-    return active_edges
+    return active_edges, status
 

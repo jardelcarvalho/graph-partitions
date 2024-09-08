@@ -11,7 +11,7 @@ import data_structures
 from lib import model
 
 
-def optimize(edges):
+def optimize(edges, print_status=False):
     graph_nodes, graph_edges, edges_weights = set(), [], []
     for i, j, w in edges:
         graph_nodes.add(i)
@@ -24,6 +24,6 @@ def optimize(edges):
 
     model.initialize(graph, None)
 
-    active_edges = model.run()
+    active_edges, status = model.run(print_status)
 
-    return active_edges
+    return active_edges, status
